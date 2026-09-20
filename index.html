@@ -168,21 +168,29 @@ h1 { font-size: 26px; font-weight: 750; letter-spacing: -0.035em; margin: 8px 0 
 }
 .arch code { font-size: 11px; background: var(--inset); padding: 1px 5px; border-radius: 4px; color: var(--black); }
 
+.controls { margin: 0 0 16px; }
+.controls .btn { margin-top: 0; }
+.controls .btn + .btn { margin-top: 8px; }
+.run-hint {
+  margin-top: 10px; font-size: 12px; font-weight: 600; color: var(--spruce);
+  background: var(--spruce-soft); border-radius: 10px; padding: 10px 12px;
+}
 .btn {
-  display: block; width: 100%; margin-top: 8px;
+  display: block; width: 100%;
   background: var(--spruce); color: #fff; border: none;
   font: inherit; font-size: 15px; font-weight: 650; letter-spacing: -0.015em;
   padding: 15px 18px; border-radius: var(--radius-btn); cursor: pointer;
-  transition: background var(--dur) var(--ease), transform var(--dur) var(--ease);
+  transition: background var(--dur) var(--ease), transform var(--dur) var(--ease), opacity var(--dur) var(--ease);
 }
 .btn:hover { background: rgba(33,78,52,.92); }
 .btn:active { transform: scale(0.98); }
-.btn:disabled { opacity: .45; cursor: default; transform: none; }
+.btn:disabled { opacity: .45; cursor: wait; transform: none; }
 .btn.secondary {
-  margin-top: 8px; background: transparent; color: var(--spruce);
+  background: transparent; color: var(--spruce);
   border: 1px solid rgba(33,78,52,.35);
 }
 .btn.secondary:hover { background: var(--spruce-soft); }
+.btn.secondary:disabled { opacity: .45; color: var(--spruce); cursor: wait; }
 .foot { margin-top: 16px; color: var(--faint); font-size: 11px; line-height: 1.55; }
 .foot a { color: var(--spruce); text-decoration: none; font-weight: 600; }
 .progress-bar {
@@ -226,6 +234,12 @@ h1 { font-size: 26px; font-weight: 750; letter-spacing: -0.035em; margin: 8px 0 
       <div class="step" data-step="capacity"><div class="n">02</div><div class="l">Capacity</div></div>
       <div class="step" data-step="agents"><div class="n">03</div><div class="l">Agents</div></div>
       <div class="step" data-step="score"><div class="n">04</div><div class="l">Scorecard</div></div>
+    </div>
+
+    <div class="controls" id="controls">
+      <button class="btn" id="run" type="button">Run full dual-demo (~20s)</button>
+      <button class="btn secondary" id="skip" type="button">Skip to scorecard</button>
+      <p class="run-hint" id="run-hint" hidden>Running — watch the timeline below. Scroll stays on the action.</p>
     </div>
 
     <div class="card" id="intake-card">
@@ -323,8 +337,6 @@ h1 { font-size: 26px; font-weight: 750; letter-spacing: -0.035em; margin: 8px 0 
       </div>
     </div>
 
-    <button class="btn" id="run" type="button">Run full dual-demo (~20s)</button>
-    <button class="btn secondary" id="skip" type="button">Skip to scorecard</button>
     <p class="foot">
       Hosted demo · <a href="https://samkartik35.github.io/deposit-bachao-demo/">samkartik35.github.io/deposit-bachao-demo</a>
       · White / black / spruce only. Spruce is the sole primary CTA.
@@ -416,12 +428,18 @@ const metricsCard = document.getElementById("metrics");
 const agentsCard = document.getElementById("agents-card");
 const runBtn = document.getElementById("run");
 const skipBtn = document.getElementById("skip");
+const runHint = document.getElementById("run-hint");
 const statusPill = document.getElementById("status-pill");
 const riskPill = document.getElementById("risk-pill");
 const prog = document.getElementById("prog");
 const steps = [...document.querySelectorAll(".step")];
 
 let abort = false;
+
+function focusAction(el) {
+  if (!el) return;
+  el.scrollIntoView({ behavior: "smooth", block: "start" });
+}
 
 function setPhase(phase) {
   steps.forEach((el) => {
@@ -519,7 +537,9 @@ async function runDemo() {
   abort = false;
   runBtn.disabled = true;
   skipBtn.disabled = true;
+  runHint.hidden = false;
   reset();
+  focusAction(document.getElementById("timeline")?.closest(".card"));
 
   for (let i = 0; i < EVENTS.length; i++) {
     if (abort) break;
@@ -536,11 +556,16 @@ async function runDemo() {
     if (ev.agent) {
       activateAgent(ev.agent, false);
       statusPill.textContent = "agents";
+      if (i === EVENTS.findIndex((e) => e.agent)) focusAction(agentsCard);
     }
     if (ev.agentsDone) finishAllAgents();
-    if (ev.kind === "score") showScore();
+    if (ev.kind === "score") {
+      showScore();
+      focusAction(scorecard);
+    }
   }
 
+  runHint.hidden = true;
   runBtn.disabled = false;
   skipBtn.disabled = false;
   runBtn.textContent = "Replay full dual-demo";
@@ -548,11 +573,13 @@ async function runDemo() {
 
 function skipToScore() {
   abort = true;
+  runHint.hidden = true;
   reset();
   EVENTS.forEach(appendEvent);
   prog.style.width = "100%";
   showScore();
   runBtn.textContent = "Replay full dual-demo";
+  focusAction(scorecard);
 }
 
 runBtn.addEventListener("click", runDemo);
