@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Deposit Bachao × Nasiko — Capacity dual-demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+:root {
+  --black: #0A0A0A;
+  --white: #FFFFFF;
+  --spruce: #214E34;
+  --muted: rgba(10,10,10,.48);
+  --faint: rgba(10,10,10,.32);
+  --hairline: rgba(10,10,10,.08);
+  --inset: rgba(10,10,10,.04);
+  --spruce-soft: rgba(33,78,52,.12);
+  --radius-btn: 14px;
+  --radius-card: 16px;
+  --dur: 180ms;
+  --ease: ease-out;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: var(--white);
+  color: var(--black);
+  -webkit-font-smoothing: antialiased;
+  font-size: 14px;
+  line-height: 1.45;
+  min-height: 100vh;
+}
+.wrap { width: min(560px, 100%); margin: 0 auto; padding: 28px 20px 64px; }
+.kicker { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--faint); }
+h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.03em; margin: 6px 0 8px; }
+.sub { color: var(--muted); font-size: 13px; margin-bottom: 22px; }
+.card {
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-card);
+  padding: 16px;
+  background: var(--white);
+  margin-bottom: 14px;
+}
+.card h2 { font-size: 13px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 10px; }
+.meta { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+.pill {
+  font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 999px;
+  background: var(--inset); color: var(--muted); font-variant-numeric: tabular-nums;
+}
+.pill.live { background: var(--spruce-soft); color: var(--spruce); }
+.timeline { list-style: none; }
+.timeline li {
+  display: grid; grid-template-columns: 64px 1fr; gap: 12px;
+  padding: 10px 0; border-top: 1px solid var(--hairline);
+  opacity: 0; transform: translateY(6px);
+  transition: opacity .35s var(--ease), transform .35s var(--ease);
+}
+.timeline li.show { opacity: 1; transform: none; }
+.timeline .t { font-variant-numeric: tabular-nums; color: var(--faint); font-size: 12px; padding-top: 2px; }
+.timeline .body b { display: block; font-size: 13px; font-weight: 600; letter-spacing: -0.01em; }
+.timeline .body span { color: var(--muted); font-size: 12px; }
+.badge {
+  display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: .04em;
+  text-transform: uppercase; padding: 2px 7px; border-radius: 6px; margin-bottom: 4px;
+  background: var(--inset); color: var(--black);
+}
+.badge.pending { background: rgba(10,10,10,.08); }
+.badge.scaling { background: rgba(10,10,10,.12); }
+.badge.recovered { background: var(--spruce-soft); color: var(--spruce); }
+.badge.score { background: var(--spruce); color: #fff; }
+.badge.failed { background: #111; color: #fff; }
+.scores { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 8px; }
+.score {
+  background: var(--inset); border-radius: 12px; padding: 12px 10px; text-align: center;
+}
+.score .n { font-size: 22px; font-weight: 700; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+.score .l { font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-top: 2px; }
+.critical {
+  margin-top: 12px; padding: 12px 14px; border-radius: 12px;
+  border: 1px solid var(--hairline); background: var(--inset);
+}
+.critical b { display: block; font-size: 13px; margin-bottom: 2px; }
+.critical span { color: var(--muted); font-size: 12px; }
+.btn {
+  display: block; width: 100%; margin-top: 18px;
+  background: var(--spruce); color: #fff; border: none;
+  font: inherit; font-size: 15px; font-weight: 600; letter-spacing: -0.015em;
+  padding: 15px 18px; border-radius: var(--radius-btn); cursor: pointer;
+  transition: background var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+.btn:hover { background: rgba(33,78,52,.92); }
+.btn:active { transform: scale(0.97); }
+.btn:disabled { opacity: .45; cursor: default; transform: none; }
+.foot { margin-top: 18px; color: var(--faint); font-size: 11px; line-height: 1.5; }
+code { font-size: 11px; background: var(--inset); padding: 1px 5px; border-radius: 4px; }
+
+.metrics {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 4px;
+}
+.metric {
+  background: var(--inset); border-radius: 12px; padding: 10px 12px;
+}
+.metric .n { font-size: 18px; font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.metric .l { font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-top: 2px; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="kicker">Nasiko OSS · Elastic agent capacity</div>
+    <h1>Capacity wait → recovery → scorecard</h1>
+    <p class="sub">Indiranagar canonical fixture. Mock SSE: <code>capacity.pending</code> → <code>scaling</code> → <code>recovered</code> → Deposit Bachao CRITICAL scorecard. No cluster required.</p>
+
+    <div class="meta">
+      <span class="pill">case · indiranagar-03</span>
+      <span class="pill">slots · 2 / 2 busy</span>
+      <span class="pill live" id="status-pill">idle</span>
+    </div>
+
+    <div class="card">
+      <h2>Live capacity timeline</h2>
+      <ul class="timeline" id="timeline" aria-live="polite"></ul>
+    </div>
+
+    <div class="card" id="scorecard" hidden>
+      <h2>Tenant scorecard · Indiranagar 2BHK</h2>
+      <div class="scores">
+        <div class="score"><div class="n">80</div><div class="l">Scam risk</div></div>
+        <div class="score"><div class="n">50</div><div class="l">Rent fair</div></div>
+        <div class="score"><div class="n">65</div><div class="l">Livability</div></div>
+      </div>
+      <div class="critical">
+        <b>CRITICAL — do not pay the gate-pass</b>
+        <span>Advance ₹2,000 ask + identity mismatch + corroborated reports. Deposit 10× rent vs ~3× comps. Confidence 0.80 · decision support only.</span>
+      </div>
+    </div>
+
+
+    <div class="card" id="metrics" hidden>
+      <h2>Capacity metrics snapshot</h2>
+      <div class="metrics">
+        <div class="metric"><div class="n" id="m-peak">—</div><div class="l">pending peak</div></div>
+        <div class="metric"><div class="n" id="m-lat">—</div><div class="l">scale latency ms</div></div>
+        <div class="metric"><div class="n" id="m-retries">—</div><div class="l">retries</div></div>
+        <div class="metric"><div class="n" id="m-rec">—</div><div class="l">recoveries</div></div>
+        <div class="metric"><div class="n" id="m-fail">0</div><div class="l">terminal failures</div></div>
+        <div class="metric"><div class="n" id="m-pending">0</div><div class="l">pending now</div></div>
+      </div>
+    </div>
+
+    <button class="btn" id="run" type="button">Run capacity demo</button>
+    <p class="foot">
+      White / black / spruce only. Spruce is the sole CTA. Pair with
+      <code>./scripts/capacity-challenge-load.sh 5 --semaphore</code>
+      and
+      <code>docs/knowledge/nasiko/capacity_challenge_evidence_pack.md</code>.
+    </p>
+  </div>
+<script>
+const EVENTS = [
+  { t: "0.0s", kind: "pending", title: "capacity.pending", detail: "reason=simulated · queue_position=2 · actionable: wait for scale or slot free" },
+  { t: "0.4s", kind: "scaling", title: "capacity.scaling", detail: "target_slots=5 · max_scale_nodes=3 · semaphore raise (maps to Karpenter / CA)" },
+  { t: "0.9s", kind: "recovered", title: "capacity.recovered", detail: "waited_ms=890 · assigned_slot=3 · starting 4-agent fan-out" },
+  { t: "1.4s", kind: "score", title: "case.completed · scorecard", detail: "scam=80 rent=50 live=65 conf=0.80 · Aditya deterministic scoring" },
+];
+
+const METRICS = {
+  pending_peak: 3,
+  scale_up_latency_ms: 480,
+  retries: 4,
+  recoveries: 3,
+  terminal_failures: 0,
+  pending_pods: 0,
+};
+
+const timeline = document.getElementById("timeline");
+const scorecard = document.getElementById("scorecard");
+const metricsCard = document.getElementById("metrics");
+const runBtn = document.getElementById("run");
+const statusPill = document.getElementById("status-pill");
+
+function reset() {
+  timeline.innerHTML = "";
+  scorecard.hidden = true;
+  metricsCard.hidden = true;
+  statusPill.textContent = "running";
+}
+
+function appendEvent(ev) {
+  const li = document.createElement("li");
+  li.innerHTML = `<div class="t">${ev.t}</div>
+    <div class="body">
+      <span class="badge ${ev.kind}">${ev.kind}</span>
+      <b>${ev.title}</b>
+      <span>${ev.detail}</span>
+    </div>`;
+  timeline.appendChild(li);
+  requestAnimationFrame(() => li.classList.add("show"));
+}
+
+function showMetrics() {
+  document.getElementById("m-peak").textContent = METRICS.pending_peak;
+  document.getElementById("m-lat").textContent = METRICS.scale_up_latency_ms;
+  document.getElementById("m-retries").textContent = METRICS.retries;
+  document.getElementById("m-rec").textContent = METRICS.recoveries;
+  document.getElementById("m-fail").textContent = METRICS.terminal_failures;
+  document.getElementById("m-pending").textContent = METRICS.pending_pods;
+  metricsCard.hidden = false;
+}
+
+async function runDemo() {
+  runBtn.disabled = true;
+  reset();
+  for (let i = 0; i < EVENTS.length; i++) {
+    await new Promise(r => setTimeout(r, i === 0 ? 200 : 550));
+    appendEvent(EVENTS[i]);
+    if (EVENTS[i].kind === "score") {
+      scorecard.hidden = false;
+      statusPill.textContent = "recovered";
+      showMetrics();
+    } else {
+      statusPill.textContent = EVENTS[i].kind;
+    }
+  }
+  runBtn.disabled = false;
+  runBtn.textContent = "Replay capacity demo";
+}
+
+runBtn.addEventListener("click", runDemo);
+</script>
+</body>
+</html>
