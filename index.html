@@ -21,124 +21,289 @@
   --radius-card: 16px;
   --dur: 180ms;
   --ease: ease-out;
+  --warn: #8a5a00;
+  --warn-bg: rgba(138,90,0,.08);
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
   font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background: var(--white);
+  background:
+    radial-gradient(1200px 500px at 10% -10%, rgba(33,78,52,.07), transparent 55%),
+    radial-gradient(900px 400px at 100% 0%, rgba(10,10,10,.03), transparent 50%),
+    var(--white);
   color: var(--black);
   -webkit-font-smoothing: antialiased;
   font-size: 14px;
-  line-height: 1.45;
+  line-height: 1.5;
   min-height: 100vh;
 }
-.wrap { width: min(560px, 100%); margin: 0 auto; padding: 28px 20px 64px; }
+.wrap { width: min(720px, 100%); margin: 0 auto; padding: 32px 20px 80px; }
 .kicker { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--faint); }
-h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.03em; margin: 6px 0 8px; }
-.sub { color: var(--muted); font-size: 13px; margin-bottom: 22px; }
+h1 { font-size: 26px; font-weight: 750; letter-spacing: -0.035em; margin: 8px 0 10px; line-height: 1.15; }
+.sub { color: var(--muted); font-size: 14px; margin-bottom: 20px; max-width: 58ch; }
 .card {
   border: 1px solid var(--hairline);
   border-radius: var(--radius-card);
-  padding: 16px;
-  background: var(--white);
+  padding: 18px;
+  background: rgba(255,255,255,.92);
   margin-bottom: 14px;
+  backdrop-filter: blur(6px);
 }
-.card h2 { font-size: 13px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 10px; }
-.meta { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+.card h2 { font-size: 13px; font-weight: 650; letter-spacing: -0.01em; margin-bottom: 12px; }
+.card .hint { color: var(--faint); font-size: 12px; margin: -6px 0 12px; }
+.meta { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
 .pill {
-  font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 999px;
+  font-size: 11px; font-weight: 600; padding: 5px 11px; border-radius: 999px;
   background: var(--inset); color: var(--muted); font-variant-numeric: tabular-nums;
 }
 .pill.live { background: var(--spruce-soft); color: var(--spruce); }
-.timeline { list-style: none; }
+.pill.warn { background: var(--warn-bg); color: var(--warn); }
+
+/* Progress */
+.steps {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 16px;
+}
+.step {
+  border: 1px solid var(--hairline); border-radius: 12px; padding: 10px 12px;
+  background: var(--white); opacity: .55; transition: opacity .3s var(--ease), border-color .3s var(--ease), background .3s var(--ease);
+}
+.step.active { opacity: 1; border-color: rgba(33,78,52,.35); background: var(--spruce-soft); }
+.step.done { opacity: 1; }
+.step .n { font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--faint); }
+.step .l { font-size: 12px; font-weight: 650; margin-top: 2px; letter-spacing: -0.01em; }
+
+/* Intake */
+.listing {
+  display: grid; gap: 10px;
+  background: var(--inset); border-radius: 12px; padding: 14px;
+}
+.listing .row { display: grid; grid-template-columns: 110px 1fr; gap: 8px; font-size: 13px; }
+.listing .row .k { color: var(--faint); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: .04em; padding-top: 2px; }
+.listing .row .v { font-weight: 500; letter-spacing: -0.01em; }
+.listing .flag {
+  margin-top: 4px; padding: 10px 12px; border-radius: 10px;
+  background: var(--warn-bg); color: var(--warn); font-size: 12px; font-weight: 600;
+}
+
+/* Timeline */
+.timeline { list-style: none; max-height: 420px; overflow-y: auto; padding-right: 4px; }
 .timeline li {
-  display: grid; grid-template-columns: 64px 1fr; gap: 12px;
-  padding: 10px 0; border-top: 1px solid var(--hairline);
-  opacity: 0; transform: translateY(6px);
-  transition: opacity .35s var(--ease), transform .35s var(--ease);
+  display: grid; grid-template-columns: 56px 1fr; gap: 12px;
+  padding: 12px 0; border-top: 1px solid var(--hairline);
+  opacity: 0; transform: translateY(8px);
+  transition: opacity .4s var(--ease), transform .4s var(--ease);
 }
 .timeline li.show { opacity: 1; transform: none; }
-.timeline .t { font-variant-numeric: tabular-nums; color: var(--faint); font-size: 12px; padding-top: 2px; }
-.timeline .body b { display: block; font-size: 13px; font-weight: 600; letter-spacing: -0.01em; }
-.timeline .body span { color: var(--muted); font-size: 12px; }
+.timeline .t { font-variant-numeric: tabular-nums; color: var(--faint); font-size: 12px; padding-top: 3px; }
+.timeline .body b { display: block; font-size: 13px; font-weight: 650; letter-spacing: -0.01em; }
+.timeline .body span { color: var(--muted); font-size: 12px; display: block; margin-top: 2px; }
+.timeline .body .extra {
+  margin-top: 6px; padding: 8px 10px; border-radius: 8px;
+  background: var(--inset); color: var(--black); font-size: 11px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  white-space: pre-wrap; line-height: 1.4;
+}
 .badge {
   display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: .04em;
   text-transform: uppercase; padding: 2px 7px; border-radius: 6px; margin-bottom: 4px;
   background: var(--inset); color: var(--black);
 }
+.badge.intake { background: rgba(10,10,10,.06); }
 .badge.pending { background: rgba(10,10,10,.08); }
 .badge.scaling { background: rgba(10,10,10,.12); }
+.badge.agent { background: rgba(33,78,52,.1); color: var(--spruce); }
 .badge.recovered { background: var(--spruce-soft); color: var(--spruce); }
 .badge.score { background: var(--spruce); color: #fff; }
 .badge.failed { background: #111; color: #fff; }
-.scores { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 8px; }
+.badge.evidence { background: rgba(138,90,0,.12); color: var(--warn); }
+
+/* Agents */
+.agents { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.agent {
+  border: 1px solid var(--hairline); border-radius: 12px; padding: 12px;
+  background: var(--white); opacity: .4; transition: opacity .35s var(--ease), border-color .35s var(--ease);
+}
+.agent.on { opacity: 1; border-color: rgba(33,78,52,.3); }
+.agent.done { opacity: 1; background: var(--spruce-soft); border-color: transparent; }
+.agent .name { font-size: 12px; font-weight: 700; letter-spacing: -0.01em; }
+.agent .role { font-size: 11px; color: var(--muted); margin: 2px 0 8px; }
+.agent .st {
+  font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--faint);
+}
+.agent.on .st { color: var(--spruce); }
+.agent .out { margin-top: 8px; font-size: 11px; color: var(--black); line-height: 1.4; display: none; }
+.agent.done .out { display: block; }
+
+/* Scorecard */
+.scores { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 4px; }
 .score {
   background: var(--inset); border-radius: 12px; padding: 12px 10px; text-align: center;
 }
-.score .n { font-size: 22px; font-weight: 700; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
-.score .l { font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-top: 2px; }
+.score .n { font-size: 22px; font-weight: 750; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+.score .l { font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; margin-top: 2px; }
 .critical {
-  margin-top: 12px; padding: 12px 14px; border-radius: 12px;
-  border: 1px solid var(--hairline); background: var(--inset);
+  margin-top: 12px; padding: 14px; border-radius: 12px;
+  border: 1px solid rgba(33,78,52,.25); background: var(--spruce-soft);
 }
-.critical b { display: block; font-size: 13px; margin-bottom: 2px; }
+.critical b { display: block; font-size: 14px; margin-bottom: 4px; letter-spacing: -0.02em; }
 .critical span { color: var(--muted); font-size: 12px; }
+.evidence { margin-top: 12px; display: grid; gap: 8px; }
+.evidence li {
+  list-style: none; padding: 10px 12px; border-radius: 10px; background: var(--inset);
+  font-size: 12px; color: var(--black);
+}
+.evidence li strong { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: var(--faint); margin-bottom: 2px; }
+.wa {
+  margin-top: 12px; padding: 14px; border-radius: 12px; border: 1px dashed var(--hairline);
+  background: var(--white); font-size: 12px; line-height: 1.55; color: var(--black);
+}
+.wa .label { font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--faint); margin-bottom: 8px; }
+
+.metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 4px; }
+.metric { background: var(--inset); border-radius: 12px; padding: 10px 12px; }
+.metric .n { font-size: 18px; font-weight: 750; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.metric .l { font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; margin-top: 2px; }
+
+.arch {
+  font-size: 12px; color: var(--muted); line-height: 1.55;
+}
+.arch code { font-size: 11px; background: var(--inset); padding: 1px 5px; border-radius: 4px; color: var(--black); }
+
 .btn {
-  display: block; width: 100%; margin-top: 18px;
+  display: block; width: 100%; margin-top: 8px;
   background: var(--spruce); color: #fff; border: none;
-  font: inherit; font-size: 15px; font-weight: 600; letter-spacing: -0.015em;
+  font: inherit; font-size: 15px; font-weight: 650; letter-spacing: -0.015em;
   padding: 15px 18px; border-radius: var(--radius-btn); cursor: pointer;
   transition: background var(--dur) var(--ease), transform var(--dur) var(--ease);
 }
 .btn:hover { background: rgba(33,78,52,.92); }
-.btn:active { transform: scale(0.97); }
+.btn:active { transform: scale(0.98); }
 .btn:disabled { opacity: .45; cursor: default; transform: none; }
-.foot { margin-top: 18px; color: var(--faint); font-size: 11px; line-height: 1.5; }
-code { font-size: 11px; background: var(--inset); padding: 1px 5px; border-radius: 4px; }
+.btn.secondary {
+  margin-top: 8px; background: transparent; color: var(--spruce);
+  border: 1px solid rgba(33,78,52,.35);
+}
+.btn.secondary:hover { background: var(--spruce-soft); }
+.foot { margin-top: 16px; color: var(--faint); font-size: 11px; line-height: 1.55; }
+.foot a { color: var(--spruce); text-decoration: none; font-weight: 600; }
+.progress-bar {
+  height: 3px; background: var(--inset); border-radius: 99px; margin: 0 0 16px; overflow: hidden;
+}
+.progress-bar > i {
+  display: block; height: 100%; width: 0%; background: var(--spruce);
+  transition: width .4s var(--ease);
+}
 
-.metrics {
-  display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 4px;
+@media (max-width: 640px) {
+  .steps { grid-template-columns: 1fr 1fr; }
+  .scores, .metrics, .agents { grid-template-columns: 1fr 1fr; }
+  .listing .row { grid-template-columns: 1fr; gap: 2px; }
+  h1 { font-size: 22px; }
 }
-.metric {
-  background: var(--inset); border-radius: 12px; padding: 10px 12px;
-}
-.metric .n { font-size: 18px; font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
-.metric .l { font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-top: 2px; }
 </style>
 </head>
 <body>
   <div class="wrap">
-    <div class="kicker">Nasiko OSS · Elastic agent capacity</div>
-    <h1>Capacity wait → recovery → scorecard</h1>
-    <p class="sub">Indiranagar canonical fixture. Mock SSE: <code>capacity.pending</code> → <code>scaling</code> → <code>recovered</code> → Deposit Bachao CRITICAL scorecard. No cluster required.</p>
+    <div class="kicker">Nasiko OSS · Deposit Bachao dual-demo</div>
+    <h1>From gate-pass scam → capacity recovery → tenant scorecard</h1>
+    <p class="sub">
+      End-to-end walkthrough for Indiranagar 2BHK: listing intake, elastic agent-slot exhaustion
+      (<code>Pending → Scaling → Recovered</code>), four-agent fan-out, and Aditya’s frozen CRITICAL scorecard.
+      No cluster required — mock SSE + deterministic scores.
+    </p>
 
     <div class="meta">
       <span class="pill">case · indiranagar-03</span>
+      <span class="pill">fixture · canonical</span>
       <span class="pill">slots · 2 / 2 busy</span>
+      <span class="pill warn" id="risk-pill">risk · unscored</span>
       <span class="pill live" id="status-pill">idle</span>
     </div>
 
+    <div class="progress-bar" aria-hidden="true"><i id="prog"></i></div>
+
+    <div class="steps" id="steps" aria-label="Demo phases">
+      <div class="step" data-step="intake"><div class="n">01</div><div class="l">Intake</div></div>
+      <div class="step" data-step="capacity"><div class="n">02</div><div class="l">Capacity</div></div>
+      <div class="step" data-step="agents"><div class="n">03</div><div class="l">Agents</div></div>
+      <div class="step" data-step="score"><div class="n">04</div><div class="l">Scorecard</div></div>
+    </div>
+
+    <div class="card" id="intake-card">
+      <h2>Case intake · Indiranagar 12th Main</h2>
+      <p class="hint">User pastes a listing URL + broker WhatsApp ask. Nasiko opens a Deposit Bachao case.</p>
+      <div class="listing">
+        <div class="row"><div class="k">Listing</div><div class="v">2BHK · Indiranagar 12th Main · ₹65,000 / mo</div></div>
+        <div class="row"><div class="k">Deposit ask</div><div class="v">₹6,50,000 (10× rent) — Karnataka norm ~2–3×</div></div>
+        <div class="row"><div class="k">Broker chat</div><div class="v">“Pay ₹2,000 gate-pass on UPI before viewing. Owner abroad.”</div></div>
+        <div class="row"><div class="k">Source</div><div class="v">NoBroker deep-link · Anakin scrape scheduled</div></div>
+        <div class="flag">⚠ Upfront visitation fee + owner-abroad template — high fraud prior</div>
+      </div>
+    </div>
+
     <div class="card">
-      <h2>Live capacity timeline</h2>
+      <h2>Live event timeline</h2>
+      <p class="hint">Mock SSE stream: capacity events, then agent spans, then case completion.</p>
       <ul class="timeline" id="timeline" aria-live="polite"></ul>
+    </div>
+
+    <div class="card" id="agents-card" hidden>
+      <h2>Four-agent fan-out</h2>
+      <p class="hint">After capacity recovers, Nasiko schedules the Deposit Bachao A2A fleet in parallel.</p>
+      <div class="agents" id="agents">
+        <div class="agent" data-agent="scam-hunter">
+          <div class="name">scam-hunter</div>
+          <div class="role">Deposit &amp; fake-owner sentinel</div>
+          <div class="st" data-st>queued</div>
+          <div class="out">Risk 80 · gate-pass + identity mismatch + 3 corroborating reports</div>
+        </div>
+        <div class="agent" data-agent="fair-rent">
+          <div class="name">fair-rent-benchmarker</div>
+          <div class="role">Locality price indexer</div>
+          <div class="st" data-st>queued</div>
+          <div class="out">Median ₹52k · listing +25% · deposit 10× vs ~3× comps</div>
+        </div>
+        <div class="agent" data-agent="commute">
+          <div class="name">commute-scorer</div>
+          <div class="role">Peak mobility &amp; flood</div>
+          <div class="st" data-st>queued</div>
+          <div class="out">Metro 750m · Bagmane 22m peak · flood risk low · live 65</div>
+        </div>
+        <div class="agent" data-agent="negotiate">
+          <div class="name">negotiation-drafter</div>
+          <div class="role">Counter-offer &amp; lease sanitize</div>
+          <div class="st" data-st>queued</div>
+          <div class="out">WhatsApp script + model-tenancy draft artifact ready</div>
+        </div>
+      </div>
     </div>
 
     <div class="card" id="scorecard" hidden>
       <h2>Tenant scorecard · Indiranagar 2BHK</h2>
+      <p class="hint">Frozen v1 contracts — Aditya deterministic Indiranagar CRITICAL fixture (unchanged by capacity layer).</p>
       <div class="scores">
         <div class="score"><div class="n">80</div><div class="l">Scam risk</div></div>
         <div class="score"><div class="n">50</div><div class="l">Rent fair</div></div>
         <div class="score"><div class="n">65</div><div class="l">Livability</div></div>
+        <div class="score"><div class="n">.80</div><div class="l">Confidence</div></div>
       </div>
       <div class="critical">
         <b>CRITICAL — do not pay the gate-pass</b>
-        <span>Advance ₹2,000 ask + identity mismatch + corroborated reports. Deposit 10× rent vs ~3× comps. Confidence 0.80 · decision support only.</span>
+        <span>Advance ₹2,000 ask + identity mismatch + corroborated scam reports. Deposit 10× rent vs ~3× comps. Decision support only — not legal advice.</span>
+      </div>
+      <ul class="evidence">
+        <li><strong>Evidence · scam</strong> UPI gate-pass demand; “owner abroad” template; phone footprint matches prior r/bangalore warnings (Anakin search).</li>
+        <li><strong>Evidence · rent</strong> 8 live comps in 1.5 km (NoBroker/99acres via Anakin). Median ₹52,000 → listing markup ~₹13k/mo.</li>
+        <li><strong>Evidence · livability</strong> CMH Road Metro ~750m walk; Bagmane Tech Park ~22 min peak; BBMP flood zone: low.</li>
+      </ul>
+      <div class="wa">
+        <div class="label">Negotiation draft · WhatsApp (copy-ready)</div>
+        Hi — thanks for the Indiranagar 12th Main 2BHK listing. Local comps in the last 14 days median around ₹52k for similar 2BHKs, and Karnataka model tenancy guidance is closer to 2–3 months deposit (not 10). I’m not comfortable with any UPI “gate-pass” before viewing. Happy to schedule a visit with ID verification, and discuss rent nearer ₹52–55k with ~3 months deposit. Can share comps if useful.
       </div>
     </div>
 
-
     <div class="card" id="metrics" hidden>
       <h2>Capacity metrics snapshot</h2>
+      <p class="hint">What judges should see: Pending never silent; scale latency visible; failures actionable; recoveries counted.</p>
       <div class="metrics">
         <div class="metric"><div class="n" id="m-peak">—</div><div class="l">pending peak</div></div>
         <div class="metric"><div class="n" id="m-lat">—</div><div class="l">scale latency ms</div></div>
@@ -149,25 +314,96 @@ code { font-size: 11px; background: var(--inset); padding: 1px 5px; border-radiu
       </div>
     </div>
 
-    <button class="btn" id="run" type="button">Run capacity demo</button>
+    <div class="card" id="arch-card">
+      <h2>What this proves</h2>
+      <div class="arch">
+        <p><strong>Product path:</strong> Deposit Bachao multi-agent tenant defense on Nasiko (A2A + MAF) with Anakin-grounded evidence.</p>
+        <p style="margin-top:8px"><strong>Infra path:</strong> Elastic agent capacity — when slots are full, cases enter a FIFO wait with explicit <code>capacity.pending</code> / <code>scaling</code> / <code>recovered</code> (or actionable failure), instead of hanging.</p>
+        <p style="margin-top:8px">Pair with <code>./scripts/capacity-challenge-load.sh 5 --semaphore</code> and <code>docs/knowledge/nasiko/capacity_challenge_evidence_pack.md</code>. PR: <a href="https://github.com/adityachauhan0/nasiko/pull/3" target="_blank" rel="noopener">adityachauhan0/nasiko#3</a>.</p>
+      </div>
+    </div>
+
+    <button class="btn" id="run" type="button">Run full dual-demo (~20s)</button>
+    <button class="btn secondary" id="skip" type="button">Skip to scorecard</button>
     <p class="foot">
-      White / black / spruce only. Spruce is the sole CTA. Pair with
-      <code>./scripts/capacity-challenge-load.sh 5 --semaphore</code>
-      and
-      <code>docs/knowledge/nasiko/capacity_challenge_evidence_pack.md</code>.
+      Hosted demo · <a href="https://samkartik35.github.io/deposit-bachao-demo/">samkartik35.github.io/deposit-bachao-demo</a>
+      · White / black / spruce only. Spruce is the sole primary CTA.
     </p>
   </div>
 <script>
 const EVENTS = [
-  { t: "0.0s", kind: "pending", title: "capacity.pending", detail: "reason=simulated · queue_position=2 · actionable: wait for scale or slot free" },
-  { t: "0.4s", kind: "scaling", title: "capacity.scaling", detail: "target_slots=5 · max_scale_nodes=3 · semaphore raise (maps to Karpenter / CA)" },
-  { t: "0.9s", kind: "recovered", title: "capacity.recovered", detail: "waited_ms=890 · assigned_slot=3 · starting 4-agent fan-out" },
-  { t: "1.4s", kind: "score", title: "case.completed · scorecard", detail: "scam=80 rent=50 live=65 conf=0.80 · Aditya deterministic scoring" },
+  {
+    t: "0.0s", kind: "intake", phase: "intake", title: "case.created",
+    detail: "POST /cases · client_request_id=indiranagar-03 · preference: 2BHK near Bagmane",
+    extra: '{\n  "locality": "Indiranagar",\n  "rent_ask": 65000,\n  "deposit_ask": 650000,\n  "flags": ["gate_pass_upi", "owner_abroad"]\n}'
+  },
+  {
+    t: "0.6s", kind: "intake", phase: "intake", title: "intake.validated",
+    detail: "SSRF checks passed · PII redacted in logs · Anakin scrape job enqueued"
+  },
+  {
+    t: "1.2s", kind: "pending", phase: "capacity", title: "capacity.pending",
+    detail: "Agent slots exhausted (2/2 busy). Case queued — not silent.",
+    extra: "reason=InsufficientSlots\nqueue_position=2\nactionable=wait_for_scale_or_slot_free"
+  },
+  {
+    t: "2.0s", kind: "pending", phase: "capacity", title: "capacity.pending · heartbeat",
+    detail: "Still waiting · queue_position=1 · operator sees Pending peak rising"
+  },
+  {
+    t: "2.8s", kind: "scaling", phase: "capacity", title: "capacity.scaling",
+    detail: "QueueRetryCoordinator requests more slots (maps to Cluster Autoscaler / Karpenter).",
+    extra: "target_slots=5\nmax_scale_nodes=3\ntimeout_ms=15000"
+  },
+  {
+    t: "3.8s", kind: "scaling", phase: "capacity", title: "capacity.scaling · progress",
+    detail: "Mock node/slot provision · semaphore raise in --semaphore mode"
+  },
+  {
+    t: "4.8s", kind: "recovered", phase: "capacity", title: "capacity.recovered",
+    detail: "Slot assigned after scale. Case leaves FIFO gate and starts agent fan-out.",
+    extra: "waited_ms=3610\nassigned_slot=3\nretries=1"
+  },
+  {
+    t: "5.6s", kind: "agent", phase: "agents", title: "maf.step · scam-hunter",
+    detail: "A2A SendStreamingMessage → scam-hunter working",
+    agent: "scam-hunter"
+  },
+  {
+    t: "6.6s", kind: "evidence", phase: "agents", title: "anakin.search · scam signals",
+    detail: "Reddit/X hits for phone + gate-pass pattern · evidence refs attached",
+    agent: "scam-hunter"
+  },
+  {
+    t: "7.4s", kind: "agent", phase: "agents", title: "maf.step · fair-rent-benchmarker",
+    detail: "Anakin scrape: NoBroker + 99acres comps in 1.5 km radius",
+    agent: "fair-rent"
+  },
+  {
+    t: "8.4s", kind: "agent", phase: "agents", title: "maf.step · commute-scorer",
+    detail: "Metro proximity + peak traffic + flood zone cross-check",
+    agent: "commute"
+  },
+  {
+    t: "9.4s", kind: "agent", phase: "agents", title: "maf.step · negotiation-drafter",
+    detail: "Synthesizing counter-offer + sanitized lease artifact (FileWithUri)",
+    agent: "negotiate"
+  },
+  {
+    t: "10.6s", kind: "agent", phase: "agents", title: "agents.settled",
+    detail: "All four agent spans complete · scores hydrated into scorecard schema",
+    agentsDone: true
+  },
+  {
+    t: "11.4s", kind: "score", phase: "score", title: "case.completed · CRITICAL scorecard",
+    detail: "scam=80 · rent=50 · live=65 · conf=0.80 · negotiation draft ready",
+    extra: "decision=CRITICAL\ngate_pass=DO_NOT_PAY\ndeposit_multiple=10.0x"
+  },
 ];
 
 const METRICS = {
   pending_peak: 3,
-  scale_up_latency_ms: 480,
+  scale_up_latency_ms: 1610,
   retries: 4,
   recoveries: 3,
   terminal_failures: 0,
@@ -177,26 +413,78 @@ const METRICS = {
 const timeline = document.getElementById("timeline");
 const scorecard = document.getElementById("scorecard");
 const metricsCard = document.getElementById("metrics");
+const agentsCard = document.getElementById("agents-card");
 const runBtn = document.getElementById("run");
+const skipBtn = document.getElementById("skip");
 const statusPill = document.getElementById("status-pill");
+const riskPill = document.getElementById("risk-pill");
+const prog = document.getElementById("prog");
+const steps = [...document.querySelectorAll(".step")];
+
+let abort = false;
+
+function setPhase(phase) {
+  steps.forEach((el) => {
+    const id = el.dataset.step;
+    el.classList.remove("active", "done");
+    const order = ["intake", "capacity", "agents", "score"];
+    const cur = order.indexOf(phase);
+    const mine = order.indexOf(id);
+    if (mine < cur) el.classList.add("done");
+    if (mine === cur) el.classList.add("active");
+  });
+}
+
+function resetAgents() {
+  document.querySelectorAll(".agent").forEach((a) => {
+    a.classList.remove("on", "done");
+    a.querySelector("[data-st]").textContent = "queued";
+  });
+}
+
+function activateAgent(id, done = false) {
+  const a = document.querySelector(`.agent[data-agent="${id}"]`);
+  if (!a) return;
+  agentsCard.hidden = false;
+  a.classList.add("on");
+  a.querySelector("[data-st]").textContent = done ? "done" : "working";
+  if (done) a.classList.add("done");
+}
+
+function finishAllAgents() {
+  document.querySelectorAll(".agent").forEach((a) => {
+    a.classList.add("on", "done");
+    a.querySelector("[data-st]").textContent = "done";
+  });
+}
 
 function reset() {
+  abort = false;
   timeline.innerHTML = "";
   scorecard.hidden = true;
   metricsCard.hidden = true;
+  agentsCard.hidden = true;
+  resetAgents();
   statusPill.textContent = "running";
+  riskPill.textContent = "risk · unscored";
+  riskPill.classList.add("warn");
+  prog.style.width = "0%";
+  setPhase("intake");
 }
 
 function appendEvent(ev) {
   const li = document.createElement("li");
+  const extra = ev.extra ? `<div class="extra">${ev.extra}</div>` : "";
   li.innerHTML = `<div class="t">${ev.t}</div>
     <div class="body">
       <span class="badge ${ev.kind}">${ev.kind}</span>
       <b>${ev.title}</b>
       <span>${ev.detail}</span>
+      ${extra}
     </div>`;
   timeline.appendChild(li);
   requestAnimationFrame(() => li.classList.add("show"));
+  li.scrollIntoView({ block: "nearest", behavior: "smooth" });
 }
 
 function showMetrics() {
@@ -209,25 +497,66 @@ function showMetrics() {
   metricsCard.hidden = false;
 }
 
+function showScore() {
+  scorecard.hidden = false;
+  statusPill.textContent = "recovered";
+  riskPill.textContent = "risk · CRITICAL";
+  riskPill.classList.remove("warn");
+  riskPill.classList.add("live");
+  setPhase("score");
+  showMetrics();
+  finishAllAgents();
+  agentsCard.hidden = false;
+}
+
+function sleep(ms) {
+  return new Promise((r) => setTimeout(r, ms));
+}
+
 async function runDemo() {
+  abort = true;
+  await sleep(30);
+  abort = false;
   runBtn.disabled = true;
+  skipBtn.disabled = true;
   reset();
+
   for (let i = 0; i < EVENTS.length; i++) {
-    await new Promise(r => setTimeout(r, i === 0 ? 200 : 550));
-    appendEvent(EVENTS[i]);
-    if (EVENTS[i].kind === "score") {
-      scorecard.hidden = false;
-      statusPill.textContent = "recovered";
-      showMetrics();
-    } else {
-      statusPill.textContent = EVENTS[i].kind;
+    if (abort) break;
+    const ev = EVENTS[i];
+    await sleep(i === 0 ? 280 : 720);
+    if (abort) break;
+    appendEvent(ev);
+    setPhase(ev.phase);
+    prog.style.width = `${((i + 1) / EVENTS.length) * 100}%`;
+
+    if (ev.kind === "pending" || ev.kind === "scaling" || ev.kind === "recovered") {
+      statusPill.textContent = ev.kind;
     }
+    if (ev.agent) {
+      activateAgent(ev.agent, false);
+      statusPill.textContent = "agents";
+    }
+    if (ev.agentsDone) finishAllAgents();
+    if (ev.kind === "score") showScore();
   }
+
   runBtn.disabled = false;
-  runBtn.textContent = "Replay capacity demo";
+  skipBtn.disabled = false;
+  runBtn.textContent = "Replay full dual-demo";
+}
+
+function skipToScore() {
+  abort = true;
+  reset();
+  EVENTS.forEach(appendEvent);
+  prog.style.width = "100%";
+  showScore();
+  runBtn.textContent = "Replay full dual-demo";
 }
 
 runBtn.addEventListener("click", runDemo);
+skipBtn.addEventListener("click", skipToScore);
 </script>
 </body>
 </html>
